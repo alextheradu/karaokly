@@ -108,10 +108,10 @@ export function CurtainReveal({ isLoggedIn }: ParticleHeroProps) {
   }, [initParticles])
 
   return (
-    <div className={`min-h-screen flex items-center justify-center relative overflow-hidden transition-all duration-500 bg-[#09090b] ${exiting ? "opacity-0 scale-95" : ""}`}>
+    <div className={`min-h-screen flex items-center justify-center relative transition-all duration-500 ${exiting ? "opacity-0 scale-95" : ""}`}>
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 z-0"
       />
 
       {/* Content */}
