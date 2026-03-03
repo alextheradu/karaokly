@@ -35,9 +35,21 @@ yarn-error.log*
 .env
 *.env
 
+# misc
+.claude
+_legacy
+CLAUDE.md
+CLAUDE.*
+*CLAUDE*
+.mcp.json
+
+docs
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
