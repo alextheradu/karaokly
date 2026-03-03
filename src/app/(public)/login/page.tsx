@@ -10,7 +10,7 @@ export default async function LoginPage() {
   if (session?.user) redirect("/app")
 
   return (
-    <div className="min-h-screen bg-dark-noise flex items-center justify-center p-4">
+    <div className="flex-1 flex items-center justify-center p-4">
       <Card className="w-full max-w-sm shadow-2xl border-0 glass-card rounded-2xl">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
