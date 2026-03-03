@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karaokly</title>
+  <link rel="icon" href="karyoke.png" type="image/png">
+  <script>
+    if (location.protocol !== 'https:') {
+      location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+    }
+  </script>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+
+      /* Updated even darker gradient */
+      background: linear-gradient(-45deg, #d2a885, #c98c9d, #75a8b9, #74c0a9);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      transition: opacity 0.5s ease, transform 0.5s ease !important;
+    }
+    @keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+    /* New fade-out class for transition */
+    .fade-out {
+      opacity: 0 !important;
+      transform: scale(0.9) !important;
+    }
+    #logo-top-left {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 150px;
+      z-index: 3;
+    }
+    #logo-top-left img {
+      width: 100%;
+      display: block;
+    }
+    #cover-container {
+      position: relative;
+      display: inline-block; /* shrink to content */
+      z-index: 2;
+      text-align: center;
+      padding-top: 20px;    /* added to push text below top bar */
+      padding-bottom: 20px; /* added to push text above bottom bar */
+    }
+    /* Make text initially hidden and fade in later */
+    #cover-content {
+      position: relative;
+      z-index: 6; /* below the bars initially */
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      animation-delay: 1s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    /* Update bar styling: thinner (20px) with white color */
+    .bar {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 5px; /* made thinner */
+      background-color: #ffffff; /* same as text color */
+      z-index: 7; /* above the content */
+    }
+    /* Place the bars in the middle initially */
+    #bar-top {
+      bottom: 50%;
+      animation: openBarsTop 1s forwards;
+    }
+    #bar-bottom {
+      top: 50%;
+      animation: openBarsBottom 1s forwards;
+    }
+    @keyframes openBarsTop {
+      from { transform: translateY(0); }
+      to { transform: translateY(-125px); }
+    }
+    @keyframes openBarsBottom {
+      from { transform: translateY(0); }
+      to { transform: translateY(130px); }
+    }
+    #app {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 20px;
+    }
+    @media only screen and (max-width: 782px) {
+      /* Hide overlay bars on mobile */
+      #bar-top,
+      #bar-bottom {
+        display: none;
+      }
+      #cover-container {
+        /* Use percentage based padding */
+        padding-top: 2%;
+        padding-bottom: 2%;
+      }
+      #cover-content {
+        animation-delay: 0.5s;
+      }
+      .bar {
+        /* Use rem for bar thickness for consistency */
+        height: 1rem;
+      }
+      /* Define updated mobile keyframes for larger translations */
+      @keyframes openBarsTopMobile {
+        from { transform: translateY(0); }
+        to { transform: translateY(-75px); }  /* increased from -50px */
+      }
+      @keyframes openBarsBottomMobile {
+        from { transform: translateY(0); }
+        to { transform: translateY(75px); }  /* increased from 50px */
+      }
+      /* Assign updated mobile animations */
+      #bar-top {
+        animation: openBarsTopMobile 1s forwards;
+      }
+      #bar-bottom {
+        animation: openBarsBottomMobile 1s forwards;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- New logo container on top left -->
+  <div id="app">
+    <!-- Wrap text and button into a cover container -->
+    <div id="cover-container">
+      <!-- Overlay bars -->
+      <div id="bar-top" class="bar"></div>
+      <div id="bar-bottom" class="bar"></div>
+      <!-- Actual content that will be revealed -->
+      <div id="cover-content">
+        <h1 class="display-4">Welcome to Karaokly Beta v1.3!</h1>
+        <p class="lead">Your favorite karaoke songs are just a click away. Let the rhythm guide you.</p>
+        <a id="enter-app-btn" class="btn btn-primary btn-lg" href="#">Enter Karaokly 🎤</a>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2465555430434322" crossorigin="anonymous"></script>
+  <script>
+    // Updated login button handler with fade-out transition
+    document.getElementById('enter-app-btn').addEventListener('click', e => {
+      e.preventDefault();
+      // Add the fade-out class to the body to trigger transition
+      document.body.classList.add('fade-out');
+      fetch('/check-login')
+        .then(response => response.json())
+        .then(data => {
+          const target = data.loggedIn ? '/app' : '/sign-up';
+          setTimeout(() => { window.location.href = target; }, 500);
+        })
+        .catch(() => {
+          setTimeout(() => { window.location.href = '/sign-up'; }, 500);
+        });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karaokly Signup</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2465555430434322"
+     crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      /* box-shadow: 0 10px 20px rgba(0,0,0,0.1); */
+      width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    button {
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+    }
+    #error {
+      color: #e53e3e;
+      text-align: center;
+    }
+    #success {
+      color: #28a745;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .login-link {
+      text-align: center;
+      margin-top: 10px;
+    }
+    @media (max-width: 480px) {
+      .form-container {
+        width: 90%;
+        padding: 20px;
+      }
+    }
+    /* Added spinner style */
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <link rel="icon" href="../karyoke.png" type="image/png">
+</head>
+<body>
+  <div class="form-container">
+    <h1>Sign Up</h1>
+    <div id="success"></div>
+    <div id="error"></div>
+    <!-- Added loading spinner element -->
+    <div id="loading" class="spinner"></div>
+    <form>
+      <!-- New username field -->
+      <input type="text" id="displayname" placeholder="Choose a username" required>
+      <!-- Changed input type to "email" with appropriate placeholder -->
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <div>
+        <input type="checkbox" id="tos-checkbox" required>
+        <label for="tos-checkbox">
+          I accept the <a href="/tos" target="_blank">Terms of Service</a>, <a href="/privacy-policy" target="_blank">Privacy Policy</a>, and <a href="https://www.youtube.com/t/terms" target="_blank">YouTube Terms of Service</a>.
+        </label>
+      </div>
+      <button type="button" id="signup-btn">Sign Up</button>
+    </form>
+    <div class="login-link">
+      <a href="/login/">Already have an account? Login</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById('signup-btn').addEventListener('click', () => {
+      // Check if TOS checkbox is checked
+      if (!document.getElementById('tos-checkbox').checked) {
+        document.getElementById('error').textContent = "Please accept the Terms of Service and Privacy Policy.";
+        return;
+      }
+      const displayName = document.getElementById('displayname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      // Clear any previous messages
+      document.getElementById('error').textContent = '';
+      document.getElementById('success').textContent = '';
+      // Show loading spinner
+      document.getElementById('loading').style.display = 'block';
+      
+      fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: displayName, email: email, password: password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Hide loading spinner
+        document.getElementById('loading').style.display = 'none';
+        if(data.success) {
+          document.getElementById('success').textContent = data.message || 'Signup successful. Please check your email for a verification link.';
+          // Clear form fields
+          document.getElementById('displayname').value = "";
+          document.getElementById('email').value = "";
+          document.getElementById('password').value = "";
+        } else {
+          document.getElementById('error').textContent = data.error || 'Signup failed.';
+        }
+      });
+    });
+
+    // Enable form submission on Enter key
+    document.querySelector('form').addEventListener('keydown', e => {
+      if(e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('signup-btn').click();
+      }
+    });
+  </script>
+</body>
+</html>

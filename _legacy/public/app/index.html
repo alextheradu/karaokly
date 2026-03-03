@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karaokly - Beta v1.2</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2465555430434322"
+    crossorigin="anonymous"></script>
+  <!-- Include QRCode.js library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #ffd1ac, #ffaec0, #9fdeff, #a0ffd3);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.form-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+  text-align: center;
+  color: #2d3748;
+  margin-bottom: 25px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+input {
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: #764ba2;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+#error {
+  color: #e53e3e;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#logout {
+  margin: 20px 0;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  text-align: left;
+  color: #2d3748;
+  font-weight: 500;
+}
+
+.logout-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.logout-buttons button {
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+#results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.video-item {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.video-item:hover {
+  transform: translateY(-5px);
+}
+
+.video-item img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.video-item p {
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
+  color: #2d3748;
+}
+
+.video-item button {
+  width: 100%;
+  border-radius: 0;
+}
+
+#playlist {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#playlist li {
+  background: white;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+#playlist li:hover {
+  transform: translateX(5px);
+}
+
+#player-container {
+  display: none;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  margin: 30px 0;
+}
+
+#player-container.active {
+  display: block;
+}
+
+#playlist-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Ensure #app-section is always visible */
+#app-section {
+  display: block !important;
+}
+
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#play-all-btn {
+  background: #28a745;
+}
+
+#play-all-btn:hover {
+  background: #218838;
+}
+
+.playlist-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+#shuffle-btn {
+  background: #9333ea;
+}
+
+#shuffle-btn:hover {
+  background: #7e22ce;
+}
+
+#no-playlist-msg {
+  margin: 20px 0;
+  font-size: 1.2em;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  .form-container, #playlist-container {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  input, button {
+    font-size: 14px;
+  }
+  #playlist li {
+    padding: 10px;
+    margin: 8px 0;
+    font-size: 14px;
+  }
+  #playlist li > div button {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  .playlist-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+/* Fix dropdown display issues */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background: white;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.dropdown-content button {
+  background: #667eea;
+  color: white;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.dropdown-content button:hover {
+  background: #764ba2;
+}
+
+.show {
+  display: block !important;
+}
+
+/* Fix enlarged QR code overlay */
+#qr-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#qr-overlay-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+#qr-overlay-content img {
+  width: 300px;
+  height: 300px;
+}
+
+#no-playlist-msg {
+      margin: 20px 0;
+      font-size: 1.2em;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    #no-playlist-msg p {
+      font-size: 1.1em;
+    }
+
+    /* Ensure #app-section is always visible */
+    #app-section {
+      display: block !important;
+    }
+
+    .logo{
+      width: 150px;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .nav-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 1000px;
+    }
+    .player-container {
+      margin-top: 20px;
+    }
+    .player {
+      width: 100%;
+      height: 400px;
+    }
+    #player {
+      display: none; /* Hide the player by default */
+    }
+
+  </style>
+  <link rel="icon" href="../karyoke.png" type="image/png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+    <!-- Main Karaoke App Section (hidden until login) -->
+
+    <div id="app-section" style="display: none;">
+      <div id="logout">
+        <div class="logo">
+          <img src="../logo-trans.png" alt="Karaokly Logo" class="logo"/>
+        </div>
+        <div class="dropdown">
+          <button id="account-dropdown-btn">Account &#9662;</button>
+          <div class="dropdown-content">
+            <button id="logout-btn">Sign Out</button>
+            <button id="reset-password-btn">Reset Password</button>
+            <button id="delete-account-btn">Delete Account</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- New UI! -->
+      <div class="nav-container">
+        <div class="nav-box">
+          <ul class="nav nav-pills" id="nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#" data-tab="song-finder">Song Finder</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-tab="playlist">Playlist</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-tab="link">Jam</a>
+            </li>
+          </ul>
+          <div id="tab-content" style="margin-top: 20px;">
+            <!-- Song Finder Tab Content -->
+            <div id="song-finder" class="tab-pane active">
+              <div class="container">
+                <!-- Search Form -->
+                <form id="search-form" class="d-flex mb-4">
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Search for songs"
+                    aria-label="Search"
+                    id="search-input"
+                    required
+                  />
+                  <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+    
+                <!-- Search Results -->
+                <div id="search-results" class="row">
+                  <!-- Search results will be appended here -->
+                </div>
+              </div>
+            </div>
+    
+            <!-- Playlist Tab Content -->
+            <div id="playlist" class="tab-pane d-none">
+              <div class="container">
+                <h3>Your Playlist</h3>
+                <ul id="playlist-items" class="list-group mb-4">
+                  <!-- Playlist items will be appended here -->
+                </ul>
+    
+                <!-- Video Player -->
+                <div class="player-container">
+                  <div id="player"></div>
+                </div>
+              </div>
+            </div>
+    
+            <!-- Jam Tab Content -->
+            <div id="link" class="tab-pane d-none">
+              <div class="container">
+                <h3>Join Jam Session</h3>
+                <p>Share this QR code with others to let them join the Jam Session:</p>
+                <button id="generate-qr-btn" class="btn btn-secondary mb-3">Generate QR Code</button>
+                <div id="qr-code"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- New: Share Playlist via QR Code -->
+
+      
+      <!-- <h1>Karaokly - A Karaoke Song Finder</h1>
+      <form id="search-form">
+        <input type="text" id="search-input" placeholder="Enter song name..." autocomplete="off" />
+        <div id="autocomplete-container"></div>
+        <button type="submit">Search</button>
+      </form>      
+      <div id="results"></div>
+      <div id="player-container"></div> -->
+
+      <!-- Playlist Section -->
+    </div>
+  </div>
+</div>
+  
+  <!-- <div id="qr-overlay">
+    <div id="qr-overlay-content">
+      <div id="qr-overlay-container"></div>
+    </div>
+  </div> -->
+  
+  <script>
+ let player;
+let isPlayerReady = false;
+
+function onYouTubeIframeAPIReady() {
+  // Player will be created when a song is played
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Check for a valid login session
+  fetch('/check-login')
+    .then(response => response.json())
+    .then(data => {
+      if (!data.loggedIn) {
+        window.location.href = '/login';
+        return; // Prevent further execution
+      }
+
+      // Tab Navigation
+      const tabs = document.querySelectorAll('#nav-tabs .nav-link');
+      const tabContents = document.querySelectorAll('.tab-pane');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function(event) {
+          event.preventDefault();
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          // Hide all tab contents
+          tabContents.forEach(content => content.classList.add('d-none'));
+          // Activate the clicked tab
+          this.classList.add('active');
+          // Show corresponding tab content
+          const activeTab = document.getElementById(this.getAttribute('data-tab'));
+          activeTab.classList.remove('d-none');
+
+          // If Playlist tab is activated, load the playlist
+          if (this.getAttribute('data-tab') === 'playlist') {
+            loadPlaylist();
+          }
+        });
+      });
+
+      // Search Form Submission
+      const searchForm = document.getElementById('search-form');
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+
+      searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (query === '') return;
+
+        // Clear previous results
+        searchResults.innerHTML = '<p>Loading...</p>';
+
+        try {
+          const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+
+          // Display Results
+          displaySearchResults(data.items);
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+          searchResults.innerHTML = '<p class="text-danger">Failed to load search results.</p>';
+        }
+      });
+
+      // Function to Display Search Results
+      function displaySearchResults(items) {
+        searchResults.innerHTML = '';
+
+        if (!items || items.length === 0) {
+          searchResults.innerHTML = '<p>No results found.</p>';
+          return;
+        }
+
+        items.forEach(item => {
+          const col = document.createElement('div');
+          col.className = 'col-md-4 mb-4';
+
+          const card = document.createElement('div');
+          card.className = 'card h-100';
+
+          const thumbnail = document.createElement('img');
+          thumbnail.src = item.snippet.thumbnails.medium.url;
+          thumbnail.className = 'card-img-top';
+          thumbnail.alt = item.snippet.title;
+
+          const cardBody = document.createElement('div');
+          cardBody.className = 'card-body d-flex flex-column';
+
+          const title = document.createElement('h5');
+          title.className = 'card-title';
+          title.textContent = item.snippet.title;
+
+          const addButton = document.createElement('button');
+          addButton.className = 'btn btn-success mt-auto';
+          addButton.textContent = 'Add to Playlist';
+          addButton.addEventListener('click', () => addToPlaylist(item));
+
+          cardBody.appendChild(title);
+          cardBody.appendChild(addButton);
+
+          card.appendChild(thumbnail);
+          card.appendChild(cardBody);
+          col.appendChild(card);
+          searchResults.appendChild(col);
+        });
+      }
+
+      // Function to Add Song to Playlist
+      async function addToPlaylist(video) {
+        try {
+          const response = await fetch('/playlist/add', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              video: {
+                videoId: video.id.videoId,
+                title: video.snippet.title,
+              },
+            }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert('Song added to your playlist!');
+            // If currently in Playlist tab, reload the playlist
+            const activeTab = document.querySelector('#nav-tabs .nav-link.active').getAttribute('data-tab');
+            if (activeTab === 'playlist') {
+              loadPlaylist();
+            }
+          } else {
+            alert(result.error || 'Failed to add song to playlist.');
+          }
+        } catch (error) {
+          console.error('Error adding to playlist:', error);
+          alert('An error occurred while adding the song to your playlist.');
+        }
+      }
+
+      // Function to Load Playlist
+      async function loadPlaylist() {
+        const playlistItems = document.getElementById('playlist-items');
+        playlistItems.innerHTML = '<p>Loading playlist...</p>';
+
+        try {
+          const response = await fetch('/playlist');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+
+          displayPlaylist(data.playlist);
+        } catch (error) {
+          console.error('Error fetching playlist:', error);
+          playlistItems.innerHTML = '<p class="text-danger">Add songs to your playlist!</p>';
+        }
+      }
+
+      // Function to Display Playlist
+      function displayPlaylist(playlist) {
+        const playlistItems = document.getElementById('playlist-items');
+        playlistItems.innerHTML = '';
+
+        if (!playlist || playlist.length === 0) {
+          playlistItems.innerHTML = '<p>Your playlist is empty.</p>';
+          return;
+        }
+
+        playlist.forEach(song => {
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+          const titleDiv = document.createElement('div');
+          titleDiv.textContent = song.title;
+
+          const buttonGroup = document.createElement('div');
+
+          const playButton = document.createElement('button');
+          playButton.className = 'btn btn-primary btn-sm me-2';
+          playButton.textContent = 'Play';
+          playButton.addEventListener('click', () => playSong(song.videoId));
+
+          const removeButton = document.createElement('button');
+          removeButton.className = 'btn btn-danger btn-sm';
+          removeButton.textContent = 'Remove';
+          removeButton.addEventListener('click', () => removeFromPlaylist(song.videoId));
+
+          buttonGroup.appendChild(playButton);
+          buttonGroup.appendChild(removeButton);
+
+          li.appendChild(titleDiv);
+          li.appendChild(buttonGroup);
+          playlistItems.appendChild(li);
+        });
+      }
+
+      // Function to Play Song
+      function playSong(videoId) {
+        // Show the player container
+        const playerElement = document.getElementById('player');
+        playerElement.style.display = 'block';
+
+        if (!isPlayerReady) {
+          // Initialize the player for the first time
+          player = new YT.Player('player', {
+            height: '400',
+            width: '100%',
+            videoId: videoId,
+            events: {
+              'onReady': onPlayerReady,
+            }
+          });
+          isPlayerReady = true;
+        } else {
+          // Load the video into the existing player
+          player.loadVideoById(videoId);
+        }
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // Function to Remove Song from Playlist
+      async function removeFromPlaylist(videoId) {
+        if (!confirm('Are you sure you want to remove this song from your playlist?')) {
+          return;
+        }
+
+        try {
+          const response = await fetch('/playlist/remove', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ videoId }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert('Song removed from your playlist.');
+            loadPlaylist();
+          } else {
+            alert(result.error || 'Failed to remove song from playlist.');
+          }
+        } catch (error) {
+          console.error('Error removing from playlist:', error);
+          alert('An error occurred while removing the song from your playlist.');
+        }
+      }
+
+      // QR Code Generation for Jam Session
+      const generateQRBtn = document.getElementById('generate-qr-btn');
+      if(generateQRBtn) {
+        generateQRBtn.addEventListener('click', () => {
+          const qrContainer = document.getElementById('qr-code');
+          qrContainer.innerHTML = ""; // Clear previous QR code if any
+          const joinUrl = window.location.origin + "/join"; // Assumed join URL
+          new QRCode(qrContainer, {
+            text: joinUrl,
+            width: 200,
+            height: 200,
+          });
+        });
+      }
+
+      // Additional Client-Side Functionality (e.g., Password Reset)
+      const resetForm = document.getElementById('reset-form');
+      if (resetForm) {
+        resetForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const token = resetForm.dataset.token;
+          const newPassword = document.getElementById('newPassword').value;
+          const res = await fetch('/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, newPassword })
+          });
+          const data = await res.json();
+          document.getElementById('message').textContent = data.success ? 'Password reset successfully.' : data.error;
+        });
+      }
+    });
+});
+  </script>
+
+  <!-- Add YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
