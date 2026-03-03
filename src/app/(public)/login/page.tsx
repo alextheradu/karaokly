@@ -2,7 +2,6 @@ import { auth, signIn } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
 import Link from "next/link"
 
 export default async function LoginPage() {
@@ -13,16 +12,6 @@ export default async function LoginPage() {
     <div className="flex-1 flex items-center justify-center p-4">
       <Card className="w-full max-w-sm shadow-2xl border-0 glass-card rounded-2xl">
         <CardHeader className="text-center pb-2">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/logo-trans.png"
-              alt="Karaokly"
-              width={160}
-              height={48}
-              className="h-12 w-auto"
-              priority
-            />
-          </div>
           <CardTitle className="text-2xl font-bold tracking-tight text-white">Welcome back</CardTitle>
           <CardDescription className="text-base text-zinc-400">
             Sign in to your Karaokly account
