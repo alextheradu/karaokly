@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google"
 import { SessionProvider } from "@/components/providers/SessionProvider"
 import { Toaster } from "@/components/ui/sonner"
+import { PublicFooter } from "@/components/layout/PublicFooter"
 import "./globals.css"
 
 const display = Plus_Jakarta_Sans({
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
           <Toaster position="bottom-right" richColors />
         </SessionProvider>
+        <PublicFooter />
       </body>
     </html>
   )
