@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function TosPage() {
   return (
-    <div className="min-h-screen bg-dark-noise py-12 px-4">
+    <div className="py-12 px-4">
       <article className="max-w-3xl mx-auto glass-card rounded-2xl p-8 sm:p-12 shadow-lg prose prose-invert prose-headings:text-white prose-a:text-cyan-400 hover:prose-a:text-cyan-300 prose-p:text-zinc-300 prose-li:text-zinc-300 prose-strong:text-white">
         <h1 className="text-3xl font-bold border-b pb-4">Terms of Service</h1>
         <p className="text-sm text-muted-foreground italic">Last Updated: February 16, 2025</p>
